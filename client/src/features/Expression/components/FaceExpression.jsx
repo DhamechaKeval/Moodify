@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { detect, init } from "../utils/utils";
+//import { useSong } from "../../Home/hooks/useSong";
 
-export default function FaceExpression() {
+export default function FaceExpression({ onClick = () => {} }) {
   const videoRef = useRef(null);
   const landmarkerRef = useRef(null);
   const streamRef = useRef(null);
+
+  //const { handleGetSong } = useSong();
 
   const [expression, setExpression] = useState("Detecting...");
 
@@ -22,6 +25,15 @@ export default function FaceExpression() {
     };
   }, []);
 
+  const handleClick = async () => {
+    const Expression = detect({ landmarkerRef, videoRef, setExpression });
+
+    onClick(Expression);
+
+    // const song = await handleGetSong(Expression);
+    // console.log("Recommended song based on expression:", song);
+  };
+
   return (
     <div style={{ textAlign: "center" }}>
       <video
@@ -29,12 +41,8 @@ export default function FaceExpression() {
         style={{ width: "400px", borderRadius: "12px" }}
         playsInline
       />
-      <h2>{expression}</h2>
-      <button
-        onClick={() => {
-          detect({ landmarkerRef, videoRef, setExpression });
-        }}
-      >
+      <h2 style={{ padding: "1rem" }}>{expression}</h2>
+      <button className="button" onClick={handleClick}>
         Detect expression
       </button>
     </div>
